@@ -1,18 +1,17 @@
 {
-  "name": "vid-hunter",
+  "name": "download-karo",
   "version": "1.0.0",
-  "description": "VID-HUNTER - Multi-platform video downloader (YouTube, Instagram, Facebook)",
+  "description": "Video Downloader App",
   "main": "server/index.js",
   "scripts": {
     "preinstall": "true",
     "start": "node server/index.js"
   },
-  "author": "Bunny",
-  "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.21.2",
-    "node-fetch": "^2.7.0",
-    "yt-dlp-exec": "^1.0.2"
+    "express": "^4.18.2",
+    "node-fetch": "^3.3.2",
+    "puppeteer": "^22.8.0",
+    "yt-dlp-exec": "^1.3.3"
   }
 }
