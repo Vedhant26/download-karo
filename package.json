@@ -4,6 +4,7 @@
   "description": "VID-HUNTER - Multi-platform video downloader (YouTube, Instagram, Facebook)",
   "main": "server/index.js",
   "scripts": {
+    "preinstall": "true",
     "start": "node server/index.js"
   },
   "author": "Bunny",
