@@ -1,0 +1,190 @@
+/* === DOWNLOAD KARO — professional pleasant UI === */
+
+/* 1. Page background */
+@keyframes breathe {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  color: #1e293b;
+  background: linear-gradient(270deg, #c7d2fe, #dbeafe, #f0f9ff, #e0f2fe);
+  background-size: 600% 600%;
+  animation: breathe 15s ease infinite;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* 2. Card container */
+.container {
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 2.5rem;
+  width: 90%;
+  max-width: 520px;
+  text-align: center;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.1);
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+.container:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 45px rgba(0,0,0,0.15);
+}
+
+h1 {
+  font-size: 2.2rem;
+  margin-bottom: .5rem;
+  background: linear-gradient(90deg,#2563eb,#7c3aed);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+p { color:#475569; margin-bottom:1.5rem; }
+
+input, select {
+  width: 100%;
+  padding: .8rem 1rem;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  transition: all .3s ease;
+  background-color: rgba(255,255,255,0.6);
+}
+input:focus, select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.2);
+}
+
+/* Generic buttons */
+button.std-btn {
+  background: linear-gradient(90deg,#2563eb,#7c3aed);
+  color:#fff;
+  border:none;
+  border-radius:12px;
+  padding:.9rem;
+  width:100%;
+  font-weight:600;
+  font-size:1rem;
+  cursor:pointer;
+  transition:transform .2s ease, box-shadow .2s ease;
+}
+button.std-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(37,99,235,.3);
+}
+
+.thumbnail {
+  width:100%;
+  border-radius:12px;
+  margin:1rem 0;
+}
+
+/* Footer */
+footer {
+  margin-top:2rem;
+  color:#64748b;
+  font-size:.9rem;
+}
+
+/* === Animated download button === */
+.download-btn {
+  background-color:transparent;
+  border:2px solid #2563eb;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-radius:50px;
+  width:160px;
+  cursor:pointer;
+  transition:all .4s ease;
+  padding:6px 10px;
+  position:relative;
+  margin:1rem auto;
+}
+.download-btn .input { display:none; }
+
+.download-btn .circle {
+  height:45px;
+  width:45px;
+  border-radius:50%;
+  background-color:#2563eb;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  transition:all .4s ease;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 0 0 0 rgba(37,99,235,.3);
+}
+.download-btn .icon {
+  color:#fff;
+  width:22px;
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+}
+.download-btn .title {
+  font-size:16px;
+  color:#2563eb;
+  transition:all .4s ease;
+  position:absolute;
+  right:22px;
+  bottom:14px;
+}
+.download-btn .title:last-child { opacity:0;visibility:hidden; }
+
+.download-btn .input:checked + .circle {
+  animation:pulse 1s forwards;
+  rotate:180deg;
+}
+.download-btn .input:checked ~ .title { opacity:0;visibility:hidden; }
+.download-btn .input:checked ~ .title:last-child {
+  opacity:1;visibility:visible;right:56px;transition:all .4s ease .5s;
+}
+
+@keyframes pulse {
+  0% {scale:.95;box-shadow:0 0 0 0 rgba(37,99,235,.6);}
+  70% {scale:1;box-shadow:0 0 0 16px rgba(37,99,235,0);}
+  100% {scale:.95;box-shadow:0 0 0 0 rgba(37,99,235,0);}
+}
+
+/* Mobile responsiveness for screens 480px and below */
+@media (max-width: 480px) {
+  .container {
+    padding: 1.5rem;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  button.std-btn {
+    padding: 1rem;
+  }
+
+  .download-btn {
+    width: 100%;
+  }
+
+  .thumbnail {
+    max-width: 100%;
+  }
+
+  /* Platform buttons on home page */
+  .platform-btn {
+    font-size: 1rem;
+    padding: 0.8rem 1.5rem;
+  }
+
+  .platform-btn img {
+    width: 28px;
+    height: 28px;
+  }
+}

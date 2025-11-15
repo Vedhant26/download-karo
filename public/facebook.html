@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Download Karo – Facebook</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>📺 Download Karo</h1>
+    <p>Paste any public Facebook video link below.</p>
+
+    <input type="text" id="fb-url" placeholder="Enter Facebook video link" />
+    <button class="std-btn" id="fb-fetch">Fetch Info</button>
+
+    <div id="fb-result" style="display:none;">
+      <img id="fb-thumb" class="thumbnail" />
+      <h3 id="fb-title"></h3>
+
+      <!-- animated download button -->
+      <label class="download-btn">
+        <input type="checkbox" class="input" id="fb-trigger" />
+        <div class="circle">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 5v14M5 12l7 7 7-7"/>
+          </svg>
+        </div>
+        <span class="title">Download</span>
+        <span class="title">Done!</span>
+      </label>
+    </div>
+
+    <footer>VB productions</footer>
+  </div>
+
+  <script>
+    const fbFetch=document.getElementById("fb-fetch");
+    const fbURL=document.getElementById("fb-url");
+    const fbResult=document.getElementById("fb-result");
+    const fbThumb=document.getElementById("fb-thumb");
+    const fbTitle=document.getElementById("fb-title");
+    const fbTrigger=document.getElementById("fb-trigger");
+
+    fbFetch.onclick=async()=>{
+      const url=fbURL.value.trim();
+      if(!url)return alert("Please enter a Facebook link");
+      fbFetch.textContent="Fetching…";
+      try{
+        const res=await fetch("/api/facebook",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url})});
+        const data=await res.json();
+        if(data.error)throw new Error(data.error);
+        fbResult.style.display="block";
+        fbThumb.src=data.thumbnail;
+        fbTitle.textContent=data.title;
+        fbTrigger.onclick=()=>{
+          window.location.href=`/api/proxy?url=${encodeURIComponent(data.url)}&title=${encodeURIComponent(data.title)}`;
+          fbTrigger.checked=true;
+          setTimeout(()=>fbTrigger.checked=false,4000);
+        };
+      }catch(e){alert("Failed to fetch video info.");}
+      finally{fbFetch.textContent="Fetch Info";}
+    };
+  </script>
+</body>
+</html>

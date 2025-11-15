@@ -1,0 +1,17 @@
+{
+  "name": "vid-hunter",
+  "version": "1.0.0",
+  "description": "VID-HUNTER - Multi-platform video downloader (YouTube, Instagram, Facebook)",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js"
+  },
+  "author": "Bunny",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "node-fetch": "^2.7.0",
+    "yt-dlp-exec": "^1.0.2"
+  }
+}

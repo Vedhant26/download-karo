@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Download Karo – Instagram</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>📸 Download Karo</h1>
+    <p>Paste any public Instagram Reel or Post link below.</p>
+
+    <input type="text" id="insta-url" placeholder="Enter Instagram link" />
+    <button class="std-btn" id="insta-fetch">Fetch Info</button>
+
+    <div id="insta-result" style="display:none;">
+      <img id="insta-thumb" class="thumbnail" />
+      <h3 id="insta-title"></h3>
+
+      <!-- animated download button -->
+      <label class="download-btn">
+        <input type="checkbox" class="input" id="insta-trigger" />
+        <div class="circle">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 5v14M5 12l7 7 7-7"/>
+          </svg>
+        </div>
+        <span class="title">Download</span>
+        <span class="title">Done!</span>
+      </label>
+    </div>
+
+    <footer>VB productions</footer>
+  </div>
+
+  <script>
+    const instaFetch=document.getElementById("insta-fetch");
+    const instaURL=document.getElementById("insta-url");
+    const instaResult=document.getElementById("insta-result");
+    const instaThumb=document.getElementById("insta-thumb");
+    const instaTitle=document.getElementById("insta-title");
+    const instaTrigger=document.getElementById("insta-trigger");
+
+    instaFetch.onclick=async()=>{
+      const url=instaURL.value.trim();
+      if(!url)return alert("Please enter an Instagram link");
+      instaFetch.textContent="Fetching…";
+      try{
+        const res=await fetch("/api/instagram",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url})});
+        const data=await res.json();
+        if(data.error)throw new Error(data.error);
+        instaResult.style.display="block";
+        instaThumb.src=data.thumbnail;
+        instaTitle.textContent=data.title;
+        instaTrigger.onclick=()=>{
+          window.location.href=`/api/proxy?url=${encodeURIComponent(data.url)}&title=${encodeURIComponent(data.title)}`;
+          instaTrigger.checked=true;
+          setTimeout(()=>instaTrigger.checked=false,4000);
+        };
+      }catch(e){alert("Failed to fetch video info.");}
+      finally{instaFetch.textContent="Fetch Info";}
+    };
+  </script>
+</body>
+</html>

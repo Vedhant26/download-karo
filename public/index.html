@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Download Karo 🎬</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* === Platform Buttons === */
+    .platforms {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .platform-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      font-size: 1.3rem;
+      font-weight: 600;
+      padding: 1rem 2rem;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      text-decoration: none;
+    }
+
+    .platform-btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+    }
+
+    .platform-btn img {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>🎬 Download Karo</h1>
+    <p>Download videos from your favorite platforms — quick and easy!</p>
+
+    <div class="platforms">
+      <a href="/youtube.html" class="platform-btn">
+        <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt="YouTube" />
+        YouTube
+      </a>
+
+      <a href="/instagram.html" class="platform-btn">
+        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram" />
+        Instagram
+      </a>
+
+      <a href="/facebook.html" class="platform-btn">
+        <img src="https://cdn-icons-png.flaticon.com/512/5968/5968764.png" alt="Facebook" />
+        Facebook
+      </a>
+    </div>
+
+    <footer>VB productions</footer>
+  </div>
+</body>
+</html>
