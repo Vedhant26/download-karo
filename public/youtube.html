@@ -1,63 +1,116 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Download Karo – YouTube</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>YouTube Downloader — Download Karo</title>
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
+  <header class="navbar">
+    <a class="logo" href="/">Download Karo</a>
+    <nav class="navlinks">
+      <a href="/#about">About</a>
+      <a href="/#terms">Terms</a>
+    </nav>
+  </header>
 
-  <div class="container">
-    <h1>🎥 Download Karo</h1>
-    <p>Grab videos directly from YouTube in your chosen quality.</p>
+  <main class="container">
+    <section class="hero">
+      <h1>YouTube Downloader</h1>
+      <p>Paste a YouTube link and fetch available qualities or audio (MP3).</p>
+    </section>
 
-    <input type="text" id="yt-url" placeholder="Paste YouTube link here…" />
-    <button class="std-btn" id="fetch-btn">Fetch Info</button>
-
-    <div id="result" style="display:none;">
-
-      <!-- Thumbnail -->
-      <img id="thumbnail" class="thumbnail" />
-      <h3 id="title"></h3>
-
-      <!-- VIDEO QUALITY DROPDOWN -->
-      <select id="quality"></select>
-
-      <!-- VIDEO DOWNLOAD BUTTON -->
-      <label class="download-btn">
-        <input type="checkbox" class="input" id="download-trigger">
-        <div class="circle">
-          <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 5v14M5 12l7 7 7-7"/>
-          </svg>
-        </div>
-        <span class="title">Download</span>
-        <span class="title">Done!</span>
-      </label>
-
-      <!-- MP3 AUDIO DOWNLOAD -->
-      <div id="audio-result" style="display:none; margin-top:25px;">
-        <label class="download-btn" style="border-color:#22c55e;">
-          <input type="checkbox" class="input" id="audio-trigger">
-          <div class="circle" style="background-color:#22c55e;">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
-              <path d="M9 18V5l12-2v13"/>
-              <circle cx="6" cy="18" r="3"/>
-              <circle cx="18" cy="16" r="3"/>
-            </svg>
-          </div>
-          <span class="title" style="color:#22c55e;">Download MP3</span>
-          <span class="title">Done!</span>
-        </label>
+    <div class="card" style="max-width:820px;margin:18px auto;padding:22px;">
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+        <input id="yt-url" class="big-input" placeholder="Paste YouTube link here (https://...)" />
+        <button id="yt-fetch" class="btn">Fetch Video</button>
+        <div id="yt-loader" class="loader" style="display:none"></div>
       </div>
 
+      <div id="yt-result" style="margin-top:18px"></div>
     </div>
 
-    <footer>VB productions</footer>
-  </div>
+    <footer class="footer">© 2025 Download Karo • Made with ❤️ by Bunny</footer>
+  </main>
 
-  <script src="script.js"></script>
+  <script src="/script.js"></script>
+  <script>
+    const fetchBtn = qs('#yt-fetch');
+    const urlInput = qs('#yt-url');
+    const result = qs('#yt-result');
+    const loader = qs('#yt-loader');
 
+    function makeSafeTitle(t){
+      return (t || 'video').replace(/[^a-z0-9_\-\.]/gi, '_').slice(0,160);
+    }
+
+    fetchBtn.addEventListener('click', async ()=>{
+      result.innerHTML = '';
+      loader.style.display = 'inline-block';
+      const url = urlInput.value.trim();
+      if(!url){
+        result.innerHTML = "<div style='color:#b91c1c;font-weight:700;margin-top:10px'>Please enter a YouTube URL</div>";
+        loader.style.display = 'none';
+        return;
+      }
+
+      try{
+        const r = await postJSON('/api/youtube',{url});
+        const data = await r.json();
+        loader.style.display = 'none';
+        if(!r.ok){ result.innerHTML = `<div style='color:#b91c1c;font-weight:700'>${data.error || 'Failed to fetch'}</div>`; return; }
+
+        // Build UI
+        const thumb = data.thumbnail ? `<img src="${data.thumbnail}" style="width:240px;border-radius:8px;margin-top:12px;">` : '';
+        let html = `<h2 style="margin-top:12px">${data.title || 'YouTube video'}</h2>${thumb}`;
+        html += `<div class="section"><h3 style="margin-top:12px">Video Qualities</h3><div class="qualities">`;
+
+        // Show video quality buttons (mp4, webm etc)
+        const qualities = data.qualities || [];
+        qualities.forEach((q, idx)=>{
+          // if it's a video url
+          html += `<button class="quality-btn" onclick="downloadViaProxy('${q.url}','${makeSafeTitle(data.title)}_${q.quality}')">${q.quality} — ${q.size}</button>`;
+        });
+        html += `</div></div>`;
+
+        // Try to find an audio-only format (m4a, webm audio)
+        let audio = null;
+        for(const f of qualities){
+          const ext = (f.url && f.url.split('.').pop()) || '';
+          if((f.format && /audio/i.test(f.format)) || ext.match(/m4a|mp3|webm|m4a|aac/)){
+            audio = f; break;
+          }
+        }
+        // If there's no obvious audio format, try from formats with vcodec none
+        if(!audio && Array.isArray(data.formats)){
+          for(const f of data.formats){
+            if(f.vcodec === 'none' || (f.acodec && f.acodec !== 'none' && !f.vcodec)){
+              audio = f; break;
+            }
+          }
+        }
+
+        // Audio download button - fallback: use best video's url and server-side proxy can serve as file (may still be mp4)
+        if(audio){
+          html += `<div class="section"><h3>Audio Only</h3>
+                    <button class="audio-btn" onclick="downloadViaProxy('${audio.url}','${makeSafeTitle(data.title)}_audio')">Download MP3 / Audio</button>
+                  </div>`;
+        } else {
+          // if no audio found, provide an audio-from-video option (server may serve mp3 if implemented)
+          html += `<div class="section"><h3>Audio Only</h3>
+                    <button class="audio-btn" onclick="downloadViaProxy('${qualities[0] ? qualities[0].url : ''}','${makeSafeTitle(data.title)}_audio')">Download Audio (from best quality)</button>
+                   </div>`;
+        }
+
+        result.innerHTML = html;
+
+      }catch(err){
+        loader.style.display = 'none';
+        console.error(err);
+        result.innerHTML = "<div style='color:#b91c1c;font-weight:700'>Unexpected error while fetching.</div>";
+      }
+    });
+  </script>
 </body>
 </html>

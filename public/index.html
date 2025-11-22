@@ -1,74 +1,63 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Download Karo 🎬</title>
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    /* === Platform Buttons === */
-    .platforms {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1rem;
-      margin-top: 2rem;
-    }
-
-    .platform-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.8rem;
-      background: linear-gradient(135deg, #2563eb, #7c3aed);
-      color: #fff;
-      border: none;
-      border-radius: 20px;
-      font-size: 1.3rem;
-      font-weight: 600;
-      padding: 1rem 2rem;
-      cursor: pointer;
-      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      text-decoration: none;
-    }
-
-    .platform-btn:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
-    }
-
-    .platform-btn img {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-    }
-  </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Download Karo</title>
+  <link rel="stylesheet" href="/style.css">
 </head>
-
 <body>
-  <div class="container">
-    <h1>🎬 Download Karo</h1>
-    <p>Download videos from your favorite platforms — quick and easy!</p>
+  <header class="navbar">
+    <a class="logo" href="/">Download Karo</a>
+    <nav class="navlinks">
+      <a href="#about">About</a>
+      <a href="#terms">Terms</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
 
-    <div class="platforms">
-      <a href="/youtube.html" class="platform-btn">
-        <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt="YouTube" />
-        YouTube
-      </a>
+  <main class="container">
+    <section class="hero">
+      <h1>Download Karo</h1>
+      <p>Download your favorite videos in HD from Instagram, Facebook & YouTube.</p>
+    </section>
 
-      <a href="/instagram.html" class="platform-btn">
-        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram" />
-        Instagram
-      </a>
+    <section class="action-card">
+      <div class="mockup card">
+        <img src="hellloo.png" alt="app mockup" class="mockup-img">
+      </div>
 
-      <a href="/facebook.html" class="platform-btn">
-        <img src="https://cdn-icons-png.flaticon.com/512/5968/5968764.png" alt="Facebook" />
-        Facebook
-      </a>
-    </div>
+      <div class="actions">
+        <div class="big-action">
+          <a class="site-btn" href="/youtube.html"><img src="youtube.png" alt=""> YouTube Downloader</a>
+          <a class="site-btn" href="/instagram.html"><img src="insta.jpeg" alt=""> Instagram Downloader</a>
+          <a class="site-btn" href="/facebook.html"><img src="face.png" alt=""> Facebook Downloader</a>
+        </div>
+      </div>
+    </section>
 
-    <footer>VB productions</footer>
-  </div>
+    <section id="about" class="section">
+      <h2>About Download Karo</h2>
+      <p>Download Karo is a fast, simple web tool that helps you download public videos and images from Instagram, YouTube and Facebook without installing any software. Paste a post link into the appropriate downloader page and pick a quality to download.</p>
+    </section>
+
+    <section id="terms" class="section">
+      <h2>Terms of Service</h2>
+      <p>Use this tool responsibly. You must only download content you own or have permission to use. We are not responsible for misuse of this service. By using Download Karo you agree to follow applicable copyright laws and platform terms of service.</p>
+    </section>
+
+    <section id="privacy" class="section">
+      <h2>Privacy Policy</h2>
+      <p>We do not store your private data. The tool temporarily fetches remote media and streams it to you; we do not keep user-uploaded media. Any logs are used for debugging and run-time monitoring only.</p>
+    </section>
+
+    <section id="contact" class="section">
+      <h2>Contact</h2>
+      <p>Made with ♥ by Bunny — for issues or feedback, contact via GitHub or your project's preferred channel.</p>
+    </section>
+
+    <footer class="footer">© 2025 Download Karo • Made with ❤️ by Bunny</footer>
+  </main>
 </body>
 </html>

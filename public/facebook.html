@@ -1,66 +1,62 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Download Karo – Facebook</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Facebook Downloader — Download Karo</title>
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>📺 Download Karo</h1>
-    <p>Paste any public Facebook video link below.</p>
+  <header class="navbar">
+    <a class="logo" href="/">Download Karo</a>
+  </header>
 
-    <input type="text" id="fb-url" placeholder="Enter Facebook video link" />
-    <button class="std-btn" id="fb-fetch">Fetch Info</button>
+  <main class="container">
+    <section class="hero">
+      <h1>Facebook Downloader</h1>
+      <p>Paste a Facebook post or video URL and fetch the media to download.</p>
+    </section>
 
-    <div id="fb-result" style="display:none;">
-      <img id="fb-thumb" class="thumbnail" />
-      <h3 id="fb-title"></h3>
+    <div class="card" style="max-width:820px;margin:18px auto;padding:22px;">
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+        <input id="fb-url" class="big-input" placeholder="Paste Facebook post or video URL (https://...)" />
+        <button id="fb-fetch" class="btn">Fetch</button>
+        <div id="fb-loader" class="loader" style="display:none"></div>
+      </div>
 
-      <!-- animated download button -->
-      <label class="download-btn">
-        <input type="checkbox" class="input" id="fb-trigger" />
-        <div class="circle">
-          <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 5v14M5 12l7 7 7-7"/>
-          </svg>
-        </div>
-        <span class="title">Download</span>
-        <span class="title">Done!</span>
-      </label>
+      <div id="fb-result" style="margin-top:18px"></div>
     </div>
 
-    <footer>VB productions</footer>
-  </div>
+    <footer class="footer">© 2025 Download Karo • Made with ❤️ by Bunny</footer>
+  </main>
 
+  <script src="/script.js"></script>
   <script>
-    const fbFetch=document.getElementById("fb-fetch");
-    const fbURL=document.getElementById("fb-url");
-    const fbResult=document.getElementById("fb-result");
-    const fbThumb=document.getElementById("fb-thumb");
-    const fbTitle=document.getElementById("fb-title");
-    const fbTrigger=document.getElementById("fb-trigger");
+    const fbFetchBtn = qs('#fb-fetch');
+    const fbUrlInput = qs('#fb-url');
+    const fbResult = qs('#fb-result');
+    const fbLoader = qs('#fb-loader');
 
-    fbFetch.onclick=async()=>{
-      const url=fbURL.value.trim();
-      if(!url)return alert("Please enter a Facebook link");
-      fbFetch.textContent="Fetching…";
+    fbFetchBtn.addEventListener('click', async ()=>{
+      fbResult.innerHTML=''; fbLoader.style.display='inline-block';
+      const url = fbUrlInput.value.trim();
+      if(!url){ fbResult.innerHTML = "<div style='color:#b91c1c'>Please enter a URL</div>"; fbLoader.style.display='none'; return; }
       try{
-        const res=await fetch("/api/facebook",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url})});
-        const data=await res.json();
-        if(data.error)throw new Error(data.error);
-        fbResult.style.display="block";
-        fbThumb.src=data.thumbnail;
-        fbTitle.textContent=data.title;
-        fbTrigger.onclick=()=>{
-          window.location.href=`/api/proxy?url=${encodeURIComponent(data.url)}&title=${encodeURIComponent(data.title)}`;
-          fbTrigger.checked=true;
-          setTimeout(()=>fbTrigger.checked=false,4000);
-        };
-      }catch(e){alert("Failed to fetch video info.");}
-      finally{fbFetch.textContent="Fetch Info";}
-    };
+        const r = await postJSON('/api/facebook',{url});
+        const data = await r.json();
+        fbLoader.style.display='none';
+        if(!r.ok){ fbResult.innerHTML = `<div style='color:#b91c1c'>${data.error || 'Failed to fetch'}</div>`; return; }
+
+        let html = `<h2 style="margin-top:8px">${data.title || 'Facebook video'}</h2>`;
+        if(data.thumbnail) html += `<img src="${data.thumbnail}" style="width:260px;border-radius:8px;margin-top:10px;">`;
+        html += `<div style="margin-top:12px"><button class="btn" onclick="downloadViaProxy('${data.url}','facebook_media')">Download Video / Media</button></div>`;
+        fbResult.innerHTML = html;
+      }catch(e){
+        console.error(e);
+        fbLoader.style.display='none';
+        fbResult.innerHTML = "<div style='color:#b91c1c'>Unexpected error</div>";
+      }
+    });
   </script>
 </body>
 </html>

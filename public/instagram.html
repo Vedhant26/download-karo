@@ -1,66 +1,62 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Download Karo – Instagram</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Instagram Downloader — Download Karo</title>
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>📸 Download Karo</h1>
-    <p>Paste any public Instagram Reel or Post link below.</p>
+  <header class="navbar">
+    <a class="logo" href="/">Download Karo</a>
+  </header>
 
-    <input type="text" id="insta-url" placeholder="Enter Instagram link" />
-    <button class="std-btn" id="insta-fetch">Fetch Info</button>
+  <main class="container">
+    <section class="hero">
+      <h1>Instagram Downloader</h1>
+      <p>Paste an Instagram post / reel URL and download the video or image.</p>
+    </section>
 
-    <div id="insta-result" style="display:none;">
-      <img id="insta-thumb" class="thumbnail" />
-      <h3 id="insta-title"></h3>
+    <div class="card" style="max-width:820px;margin:18px auto;padding:22px;">
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+        <input id="ig-url" class="big-input" placeholder="Paste Instagram post or reel URL (https://...)" />
+        <button id="ig-fetch" class="btn">Fetch</button>
+        <div id="ig-loader" class="loader" style="display:none"></div>
+      </div>
 
-      <!-- animated download button -->
-      <label class="download-btn">
-        <input type="checkbox" class="input" id="insta-trigger" />
-        <div class="circle">
-          <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 5v14M5 12l7 7 7-7"/>
-          </svg>
-        </div>
-        <span class="title">Download</span>
-        <span class="title">Done!</span>
-      </label>
+      <div id="ig-result" style="margin-top:18px"></div>
     </div>
 
-    <footer>VB productions</footer>
-  </div>
+    <footer class="footer">© 2025 Download Karo • Made with ❤️ by Bunny</footer>
+  </main>
 
+  <script src="/script.js"></script>
   <script>
-    const instaFetch=document.getElementById("insta-fetch");
-    const instaURL=document.getElementById("insta-url");
-    const instaResult=document.getElementById("insta-result");
-    const instaThumb=document.getElementById("insta-thumb");
-    const instaTitle=document.getElementById("insta-title");
-    const instaTrigger=document.getElementById("insta-trigger");
+    const igFetch = qs('#ig-fetch');
+    const igUrlInput = qs('#ig-url');
+    const igResult = qs('#ig-result');
+    const igLoader = qs('#ig-loader');
 
-    instaFetch.onclick=async()=>{
-      const url=instaURL.value.trim();
-      if(!url)return alert("Please enter an Instagram link");
-      instaFetch.textContent="Fetching…";
+    igFetch.addEventListener('click', async ()=>{
+      igResult.innerHTML = ''; igLoader.style.display = 'inline-block';
+      const url = igUrlInput.value.trim();
+      if(!url){ igResult.innerHTML = "<div style='color:#b91c1c'>Please enter a URL</div>"; igLoader.style.display='none'; return;}
       try{
-        const res=await fetch("/api/instagram",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url})});
-        const data=await res.json();
-        if(data.error)throw new Error(data.error);
-        instaResult.style.display="block";
-        instaThumb.src=data.thumbnail;
-        instaTitle.textContent=data.title;
-        instaTrigger.onclick=()=>{
-          window.location.href=`/api/proxy?url=${encodeURIComponent(data.url)}&title=${encodeURIComponent(data.title)}`;
-          instaTrigger.checked=true;
-          setTimeout(()=>instaTrigger.checked=false,4000);
-        };
-      }catch(e){alert("Failed to fetch video info.");}
-      finally{instaFetch.textContent="Fetch Info";}
-    };
+        const r = await postJSON('/api/instagram',{url});
+        const data = await r.json();
+        igLoader.style.display = 'none';
+        if(!r.ok){ igResult.innerHTML = `<div style='color:#b91c1c'>${data.error || 'Failed to fetch'}</div>`; return; }
+
+        let html = `<h2 style="margin-top:8px">${data.title || data.caption || 'Instagram content'}</h2>`;
+        if(data.thumbnail) html += `<img src="${data.thumbnail}" style="width:260px;border-radius:8px;margin-top:10px;">`;
+        html += `<div style="margin-top:12px"><button class="btn" onclick="downloadViaProxy('${data.url}','instagram_media')">Download Video / Media</button></div>`;
+        igResult.innerHTML = html;
+      }catch(e){
+        console.error(e);
+        igLoader.style.display = 'none';
+        igResult.innerHTML = "<div style='color:#b91c1c'>Unexpected error</div>";
+      }
+    });
   </script>
 </body>
 </html>
